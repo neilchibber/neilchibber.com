@@ -1,0 +1,5 @@
+# Original photos and the previous version of the site: kept locally, not published.
+# The page only uses the resized copies in img/.
+/IMG_*.jpeg
+/fecc244d6bbe2a347fc8b50bc4caa796.webp
+/previous/

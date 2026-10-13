@@ -1,0 +1,246 @@
+:root {
+  /* Every colour is taken from the hero photo: its sky, its hills, its ground after dark. */
+  --zenith: #10224e;
+  --haze: #98b2cc;          /* sky at the horizon */
+  --ground: #2a1316;        /* the page */
+  --rule: #6b4a48;          /* outlines and connectors */
+  --dust: #cdb1a9;          /* secondary text */
+  --salt: #f8f0ea;          /* text */
+  --blue: #a4c4ea;          /* links on hover, focus, live traces */
+
+  --display: "League Gothic", "Arial Narrow", sans-serif;
+  --text: "Newsreader", Georgia, serif;
+
+  --t-note: .8125rem;
+  --t-small: .9375rem;
+  --t-body: 1.125rem;
+  --t-statement: clamp(1.375rem, 2.3vw, 2.25rem);
+  --t-h3: clamp(2rem, 3.3vw, 3.25rem);
+  --t-h2: clamp(4.5rem, 12vw, 11.5rem);
+
+  --pad: 4vw;
+  --gutter: 3vw;
+  --axis: 41.5vw;           /* the name, every heading and every text column start on this line */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--salt);
+  font: 380 var(--t-body)/1.55 var(--text);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p, ol, dl, dd, figure { margin: 0; }
+ol { padding: 0; list-style: none; }
+b { font-weight: 600; }
+code { font: .86em ui-monospace, "Cascadia Mono", Consolas, monospace; }
+img { display: block; max-width: 100%; height: auto; }
+
+a { color: inherit; text-decoration-thickness: .06em; text-underline-offset: .2em; }
+a:hover { color: var(--blue); }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+::selection { background: var(--blue); color: var(--zenith); }
+
+/* ---------- hero ---------- */
+
+.hero { position: relative; }
+
+/* The desert photo has its sky cut away. The sky is a gradient, the name sits on it,
+   and the hills are drawn over both, so the name can rise from behind them. */
+.hero__stage {
+  --s: 100vw;                                          /* width the photo is drawn at */
+  --fold: max(100svh, 45vw);                           /* first screen; ends just under the rover's wheels */
+  --tail: calc(var(--s) * .1373);                      /* ground left over below the fold, faded into the page */
+  --skyline: calc(var(--tail) + var(--s) * .366);      /* where the name rests, measured up from the bottom */
+  --cap: clamp(5vw, var(--fold) - 38.6vw, 10.8vw);     /* cap height of the name: as tall as the sky allows */
+  --sink: calc(var(--cap) + var(--s) * .05);           /* how far down hides the name completely */
+  position: relative; height: calc(var(--fold) + var(--tail)); overflow: clip;
+  background:
+    linear-gradient(var(--zenith), #2e5696 42%, #7098c8 74%, var(--haze)) top / 100% calc(100% - var(--tail) - var(--s) * .33) no-repeat,
+    linear-gradient(to top, var(--ground) calc(var(--tail) + var(--s) * .2), var(--haze) 0);
+}
+
+.hero__ground {
+  position: absolute; left: 0; bottom: 0; z-index: 2; width: var(--s); max-width: none;
+  -webkit-mask-image: linear-gradient(#000 calc(100% - var(--tail)), transparent);
+  mask-image: linear-gradient(#000 calc(100% - var(--tail)), transparent);
+}
+
+/* League Gothic's caps are .734 em tall; a line-height of .735 makes the box exactly cap top to baseline. */
+.name {
+  position: absolute; left: var(--axis); bottom: var(--skyline); z-index: 1;
+  font: 400 calc(var(--cap) / .734)/.735 var(--display);
+  text-transform: uppercase; white-space: nowrap;
+}
+.js .name { transform: translateY(var(--sink)); }
+.js .is-ready .name { transform: none; transition: transform 1.7s cubic-bezier(.16, .8, .24, 1) .25s; }
+
+.hero__nav {
+  position: absolute; top: 0; left: 0; z-index: 3; max-width: var(--axis);   /* wraps before it reaches the name */
+  display: flex; flex-wrap: wrap; gap: .25rem 1.75rem; padding: 1.1rem var(--pad);
+  font-size: var(--t-small);
+}
+.hero__nav a { text-decoration: none; }
+.hero__nav a:hover { text-decoration: underline; }
+
+.hero__caption { padding: 0 var(--pad); font-size: var(--t-small); font-style: italic; color: var(--dust); }
+
+@media (min-width: 56rem) and (min-aspect-ratio: 5/4) {
+  .hero__caption { position: absolute; left: var(--pad); bottom: 1.1vw; z-index: 3; padding: 0; }
+}
+
+/* Tall screens: the photo is drawn larger and cropped to the rover, and the name stacks above the hill. */
+@media (max-aspect-ratio: 4/5) {
+  .hero__stage {
+    --s: 185vw;
+    --skyline: calc(var(--tail) + var(--s) * .434);
+    --cap: clamp(12vw, (100svh - 94vw) / 2.17, 28.2vw);
+    --sink: calc(var(--cap) * 2.17 + var(--s) * .1);
+  }
+  .name { left: var(--pad); line-height: .86; margin-bottom: -.0625em; }
+  .name span { display: block; }
+  .hero__nav { max-width: none; }
+}
+
+/* ---------- sections ---------- */
+
+.band { padding: clamp(5.5rem, 12vw, 10.5rem) var(--pad) 0; }
+
+h2 {
+  margin: 0 0 clamp(2.25rem, 5vw, 4.5rem) calc(var(--axis) - var(--pad));
+  font: 400 var(--t-h2)/.8 var(--display); text-transform: uppercase;
+}
+h3 { font: 400 var(--t-h3)/.95 var(--display); text-transform: uppercase; }
+
+.split {
+  display: grid; grid-template-columns: calc(var(--axis) - var(--pad) - var(--gutter)) minmax(0, 1fr);
+  gap: 1.25rem var(--gutter); align-items: start;
+}
+.lead { margin-left: calc(var(--axis) - var(--pad)); }
+.statement { max-width: 27em; font-size: var(--t-statement); font-weight: 330; line-height: 1.28; }
+
+.photo img, .diagram img, .math img { width: 100%; }
+.photo img { background: var(--rule); }
+figcaption { margin-top: .65rem; font-size: var(--t-small); font-style: italic; color: var(--dust); }
+
+/* The section's introduction: text over a photo on the left, as tall together as the photo on the right. */
+.split--intro { align-items: stretch; }
+.intro__side { display: flex; flex-direction: column; justify-content: space-between; gap: 2rem; }
+.intro__side .statement { font-size: clamp(1.25rem, 1.56vw, 2rem); }
+
+/* ---------- entries: a heading and one picture on the left, the story on the right ---------- */
+
+.entry { margin-top: clamp(4.5rem, 9vw, 8rem); }
+h2 + .entry { margin-top: 0; }
+.entry__side h3 { margin-bottom: 1.4rem; }
+.entry__body { display: grid; gap: 1.15rem; }
+.entry__body > p { max-width: 62ch; }
+.entry__body > figure, .pair { margin-block: .6rem; }
+
+.math { max-width: 27rem; }
+.diagram--small { max-width: 39rem; }
+.math--narrow { max-width: 15rem; }
+.pair { display: flex; gap: 1rem; align-items: flex-start; }
+
+/* The numbers match the red callouts on the board layout. */
+.parts { columns: 2; column-gap: 2.5rem; padding-left: 1.6em; list-style: decimal; font-size: var(--t-small); color: var(--dust); }
+.parts li { break-inside: avoid; padding-bottom: .2rem; }
+
+.targets { width: 100%; max-width: 62ch; border-collapse: collapse; font-size: var(--t-small); }
+.targets th { font-weight: 600; text-align: left; }
+.targets th, .targets td { padding: .45rem 1rem .45rem 0; border-bottom: 1px solid var(--rule); }
+.targets td:last-child { color: var(--dust); }
+
+.chain { display: flex; flex-wrap: wrap; gap: .5rem 0; font-size: var(--t-note); line-height: 1.3; color: var(--dust); }
+.chain li { position: relative; padding: .35rem .65rem; border: 1px solid var(--rule); }
+.chain li + li { margin-left: 1rem; }
+.chain li + li::before { content: ""; position: absolute; right: 100%; top: 50%; width: 1rem; height: 1px; margin-right: 1px; background: var(--rule); }
+
+/* Side quests: a small picture hung just left of the text. */
+.entry--quest .photo { width: 55%; justify-self: end; }
+.entry--quest h3 { margin-bottom: .2rem; }
+.entry--quest + .entry--quest { margin-top: clamp(2.75rem, 5vw, 4.5rem); }
+
+/* ---------- interactive plots ---------- */
+
+html:not(.js) .sim { display: none; }
+
+.sim { display: grid; grid-template-columns: minmax(0, 1fr) 15rem; gap: 2.25rem var(--gutter); margin-top: 2.5rem; }
+.sim__plot { position: relative; height: 15rem; border-left: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.sim__plot--run { height: 11rem; }
+.sim__plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.sim__plot path { fill: none; vector-effect: non-scaling-stroke; }
+.sim__target { stroke: var(--dust); stroke-width: 1; stroke-dasharray: 5 5; }
+.sim__trace { stroke: var(--blue); stroke-width: 2.5; stroke-linejoin: round; }
+.sim__band { fill: var(--blue); opacity: .16; }
+.sim__mark { position: absolute; top: calc(100% + .7rem); translate: -50%; font-size: var(--t-note); line-height: 1; white-space: nowrap; color: var(--dust); }
+.sim__mark::before { content: ""; position: absolute; left: 50%; bottom: calc(100% + .15rem); width: 1px; height: .5rem; background: var(--rule); }
+.sim__plot--cell { margin-left: 1.9rem; }                 /* room for the scale */
+.sim__level { position: absolute; right: calc(100% + .55rem); translate: 0 -50%; font-size: var(--t-note); line-height: 1; color: var(--dust); }
+.sim__level::after { content: ""; position: absolute; left: calc(100% + .15rem); top: 50%; width: .4rem; height: 1px; background: var(--rule); }
+.sim__peak { position: absolute; width: .65rem; height: .65rem; margin: -.325rem 0 0 -.325rem; border-radius: 50%; background: var(--salt); }
+
+.tube { display: block; width: 100%; height: 5rem; margin-top: 2.75rem; }
+.tube path { fill: var(--dust); }
+
+.sim__controls { display: grid; gap: 1rem; align-content: start; font-size: var(--t-small); }
+.sim__note { font-size: var(--t-note); line-height: 1.5; color: var(--dust); }
+.knob { display: grid; grid-template-columns: 1fr auto; row-gap: .35rem; }
+.knob output { font-weight: 600; }
+.knob input { grid-column: 1 / -1; width: 100%; height: 1.5rem; margin: 0; background: none; -webkit-appearance: none; appearance: none; cursor: ew-resize; }
+.knob input::-webkit-slider-runnable-track { height: 1px; background: var(--dust); }
+.knob input::-moz-range-track { height: 1px; background: var(--dust); }
+.knob input::-webkit-slider-thumb { -webkit-appearance: none; width: .5rem; height: 1.5rem; margin-top: calc(.5px - .75rem); background: var(--salt); border: 0; border-radius: 0; }
+.knob input::-moz-range-thumb { width: .5rem; height: 1.5rem; background: var(--salt); border: 0; border-radius: 0; }
+
+.sim__presets { display: flex; margin-top: .25rem; }
+.sim__presets button { flex: 1; font: inherit; padding: .45rem .25rem; color: var(--salt); background: none; border: 1px solid var(--rule); border-radius: 0; cursor: pointer; }
+.sim__presets button + button { border-left: 0; }
+.sim__presets button[aria-pressed="true"] { background: var(--salt); color: var(--ground); }
+
+.sim figcaption { grid-column: 1 / -1; margin-top: .5rem; font-style: normal; color: var(--salt); }
+
+/* ---------- contact and footer ---------- */
+
+.band--close h2 { margin-bottom: 1.1rem; font: 330 var(--t-statement)/1.28 var(--text); text-transform: none; }
+.reach { display: flex; flex-wrap: wrap; gap: .5rem 2rem; }
+
+.end { padding: clamp(5rem, 11vw, 9rem) var(--pad) 2.5rem; font-size: var(--t-small); color: var(--dust); }
+
+/* ---------- wide screens: the heading and its picture stay in view while the story scrolls ---------- */
+
+@media (min-width: 56.01rem) {
+  .entry__side { position: sticky; top: 1.75rem; }
+  .entry__side .photo img { width: auto; max-height: calc(100svh - 13rem); }
+}
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 56rem) {
+  :root { --pad: 5vw; }
+  h2, .lead { margin-left: 0; }
+  .split, .sim { grid-template-columns: minmax(0, 1fr); }
+  .entry--quest .photo { width: 62%; justify-self: start; }
+  .sim__plot { height: 12rem; }
+  .sim__plot--run { height: 9rem; }
+}
+
+@media (max-width: 30rem) {
+  .hero__nav { gap: .25rem 1.1rem; }
+  .parts { columns: 1; }
+  .pair { flex-direction: column; }
+  /* Block diagrams keep a readable size on a phone and scroll sideways instead of shrinking. */
+  .diagram { overflow-x: auto; }
+  .diagram img[src$=".svg"] { width: 33rem; max-width: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .name, .js .is-ready .name { transform: none; transition: none; }
+}

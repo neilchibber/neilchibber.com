@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neil Chibber, embedded engineer</title>
+<meta name="description" content="Neil Chibber designs the boards and writes the firmware that make machines move. Electrical engineering at the University of Maryland, lead embedded engineer on its Mars rover team.">
+<meta name="theme-color" content="#10224e">
+<link rel="canonical" href="https://neilchibber.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Neil Chibber, embedded engineer">
+<meta property="og:description" content="I design the boards and write the firmware that make machines move.">
+<meta property="og:url" content="https://neilchibber.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%232e5696'/%3E%3Cpath fill='%23a8554a' d='M0 21q8-7 15-3t17-1v15H0z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/hero-ground-2400.webp" imagesrcset="img/hero-ground-1400.webp 1400w, img/hero-ground-2400.webp 2400w" imagesizes="(max-aspect-ratio: 4/5) 185vw, 100vw">
+<link rel="stylesheet" href="styles.css">
+<script>document.documentElement.className = 'js';</script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero__stage">
+    <nav class="hero__nav" aria-label="Sections">
+      <a href="#loop">UMD Loop</a>
+      <a href="#projects">Projects</a>
+      <a href="#side-quests">Side quests</a>
+      <a href="#contact">Contact</a>
+      <a href="Neil_Chibber_Resume.pdf">CV</a>
+    </nav>
+    <h1 class="name"><span>Neil</span> <span>Chibber</span></h1>
+    <img class="hero__ground" src="img/hero-ground-2400.webp" srcset="img/hero-ground-1400.webp 1400w, img/hero-ground-2400.webp 2400w" sizes="(max-aspect-ratio: 4/5) 185vw, 100vw" width="2400" height="1404" fetchpriority="high" alt="A six-wheeled rover with a tall mast and a robotic arm parked on red desert ground, with banded red hills behind it.">
+  </div>
+  <p class="hero__caption">Our rover at the University Rover Challenge. Mars Desert Research Station, Utah, May 2026.</p>
+</header>
+
+<main>
+
+<section class="band" id="loop">
+  <h2>UMD Loop</h2>
+
+  <div class="split split--intro">
+    <div class="intro__side">
+      <p class="statement">I lead the ten-plus engineers who build the electronics and firmware inside the University of Maryland's Mars rover. Every spring it goes to the Utah desert for the University Rover Challenge.</p>
+      <figure class="photo">
+        <img src="img/utah-road-1400.webp" srcset="img/utah-road-800.webp 800w, img/utah-road-1400.webp 1400w" sizes="(max-width: 56rem) 90vw, 35vw" width="1400" height="1050" loading="lazy" alt="A two-lane road curving through red rock cliffs and desert scrub under a clear sky, with a white SUV ahead.">
+        <figcaption>On the road in Utah, near Capitol Reef.</figcaption>
+      </figure>
+    </div>
+    <figure class="photo">
+      <img src="img/team-mdrs-1800.webp" srcset="img/team-mdrs-1000.webp 1000w, img/team-mdrs-1800.webp 1800w" sizes="(max-width: 56rem) 90vw, 55vw" width="1800" height="1200" loading="lazy" alt="Five team members holding a UMD Loop banner beside the Mars Desert Research Station sign, with the rover parked in front of them.">
+      <figcaption>The software team and the rover at the Mars Desert Research Station.</figcaption>
+    </figure>
+  </div>
+
+  <article class="split entry">
+    <div class="entry__side">
+      <h3>Hardware platform</h3>
+      <figure class="photo">
+        <img src="img/motherboard-1230.webp" srcset="img/motherboard-700.webp 700w, img/motherboard-1230.webp 1230w" sizes="(max-width: 56rem) 90vw, 35vw" width="1230" height="1080" loading="lazy" alt="KiCad layout of a small square circuit board with an STM32 microcontroller at its centre and eleven numbered callouts.">
+        <figcaption>STM32 motherboard layout.</figcaption>
+      </figure>
+    </div>
+    <div class="entry__body">
+      <p>Every subsystem board is split into a standard motherboard and a task-specific daughterboard. The motherboard carries the MCU and everything needed to run it. The daughterboard carries whatever the subsystem needs: servos, transceivers, sensors. Because every board shares the same MCU, the same firmware platform runs on all of them.</p>
+      <ol class="parts">
+        <li>STM32L476RGT6, a Cortex-M4 at 80 MHz</li>
+        <li>USB port for power and debug</li>
+        <li>Onboard debugger</li>
+        <li>TCAN330 CAN transceiver</li>
+        <li>TPS7A1901 regulator</li>
+        <li>Power LED</li>
+        <li>Oscillator</li>
+        <li>Daughterboard connector</li>
+        <li>LED solder bridge</li>
+        <li>User LED</li>
+        <li>Buttons</li>
+      </ol>
+      <p><b>Why the L476.</b> 1 MB of flash, 128 KB of RAM, and the peripherals the rover needs on one chip: CAN for the rover-wide network, timers and PWM for motors and servos, ADCs for analog sensors, and UART, SPI and I²C for everything else.</p>
+    </div>
+  </article>
+
+  <article class="split entry">
+    <div class="entry__side">
+      <h3>Zephyr firmware</h3>
+      <figure class="photo">
+        <img src="img/thread-analyzer-1140.webp" srcset="img/thread-analyzer-640.webp 640w, img/thread-analyzer-1140.webp 1140w" sizes="(max-width: 56rem) 90vw, 35vw" width="1140" height="1395" loading="lazy" alt="Terminal output from Zephyr's thread analyzer listing stack and CPU use for the CAN transmit, CAN receive, idle and main threads.">
+        <figcaption>Zephyr thread analyzer output.</figcaption>
+      </figure>
+    </div>
+    <div class="entry__body">
+      <figure class="diagram">
+        <img src="img/firmware-architecture.svg" width="409" height="225" loading="lazy" alt="Block diagram. Kconfig and the DBC file feed an auto-generate step that produces system boundaries and message queues. System threads read those queues and talk to drivers. A CAN interrupt fills a receive queue that the CAN system routes, and threads reply through one transmit queue to the CAN transceiver.">
+        <figcaption>Zephyr firmware architecture.</figcaption>
+      </figure>
+      <p><b>Configuration, not code.</b> <code>main.c</code> does nothing. Kconfig selects which systems a board runs, and the devicetree initializes the hardware and picks the drivers.</p>
+      <p><b>Generated boundaries.</b> The CAN message database feeds an auto-generate step that produces each system's boundaries and message queues, so the protocol and the firmware cannot drift apart.</p>
+      <p><b>Systems are threads.</b> Each system is a thread that reads its own message queue and talks to drivers. Zephyr gives every driver of the same kind the same API, so swapping a part does not change system code.</p>
+      <p><b>Stack sizing.</b> The thread analyzer reports stack use and CPU time for every thread. The CAN receive thread peaks at 224 of 256 bytes and transmit at 184 of 256: enough headroom to run safely without wasting RAM on every board.</p>
+      <figure class="photo">
+        <img src="img/life-detection-1600.webp" srcset="img/life-detection-900.webp 900w, img/life-detection-1600.webp 1600w" sizes="(max-width: 56rem) 90vw, 55vw" width="1600" height="1204" loading="lazy" alt="The rover chassis up on wooden stands in the lab, with the life detection hardware mounted between its front wheels.">
+        <figcaption>Life detection testing on the rover. Hardware-in-the-loop runs took it to 99.9% data integrity across 10,000+ frames.</figcaption>
+      </figure>
+    </div>
+  </article>
+
+  <article class="split entry">
+    <div class="entry__side">
+      <h3>Radio link</h3>
+      <figure class="photo">
+        <img src="img/radio-test-1200.webp" srcset="img/radio-test-700.webp 700w, img/radio-test-1200.webp 1200w" sizes="(max-width: 56rem) 90vw, 35vw" width="1200" height="900" loading="lazy" alt="A laptop showing a terminal session, connected to the rover's Jetson computer in a white case on a workbench.">
+        <figcaption>Radio testing with the rover's Jetson.</figcaption>
+      </figure>
+    </div>
+    <div class="entry__body">
+      <p>The rover is driven from a base station over a radio link, and at competition that link has to hold up across open desert, behind terrain and at long range. I've started on it from both ends: getting the rover's networking stable, and designing a directional antenna for the base station.</p>
+      <p><b>Radio debugging.</b> While testing the link I set a static IP on the Jetson, the rover's onboard computer, so it always sits at a known address. The base station can find the rover without discovery, and a dropped link is quick to spot.</p>
+      <p>I'm also in the process of getting my ham radio license.</p>
+    </div>
+  </article>
+
+  <article class="split entry">
+    <div class="entry__side">
+      <h3>Yagi-Uda antenna</h3>
+      <figure class="math">
+        <img src="img/yagi-calcs.svg" width="255" height="186" loading="lazy" alt="Wavelength: lambda equals c over f, 2.998 times ten to the eighth metres per second over 915 megahertz, which is 0.328 metres. Reflector 0.495 lambda, 162 millimetres. Driven element 0.473 lambda, 155 millimetres. Directors 0.44 down to 0.42 lambda, 144 down to 138 millimetres. Boom 1.35 lambda, about 443 millimetres. Free-space path loss at one kilometre: 91.7 decibels. Range against a dipole: ten to the power of 11 minus 2.15 over 20, about 2.8.">
+        <figcaption>The starting numbers, before simulation.</figcaption>
+      </figure>
+    </div>
+    <div class="entry__body">
+      <p>In progress. This is a design plan, not a finished antenna.</p>
+      <figure class="diagram">
+        <img src="img/yagi-layout.svg" width="468" height="176" loading="lazy" alt="Side view of a seven-element Yagi: a reflector, a driven element with a 50 ohm feed, and five directors along a boom, pointing right. Element lengths run from 162 millimetres down to 138.">
+        <figcaption>Preliminary seven-element layout for 915 MHz. Dimensions in mm.</figcaption>
+      </figure>
+      <p><b>Why a Yagi.</b> The base station only needs to point toward the rover's operating area, so a directional antenna trades coverage it does not need for gain it does. One reflector, one driven element and five directors give a target of about 11 dBi.</p>
+      <p><b>What that buys.</b> Against a plain dipole, 11 dBi is about 9 dB more signal, which in free space is roughly 2.8 times the range.</p>
+      <table class="targets">
+        <thead><tr><th>Parameter</th><th>Target</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Band</td><td>902 to 928 MHz ISM</td><td>Selected</td></tr>
+          <tr><td>Gain</td><td>About 11 dBi</td><td>To be simulated</td></tr>
+          <tr><td>Front-to-back ratio</td><td>Over 15 dB</td><td>To be simulated</td></tr>
+          <tr><td>VSWR across the band</td><td>Under 2:1</td><td>To be measured</td></tr>
+        </tbody>
+      </table>
+      <p><b>Next.</b> Optimize element lengths and spacing in an NEC-based simulator, then build it, sweep S11 on a network analyzer and take it out for a range test.</p>
+    </div>
+  </article>
+</section>
+
+<section class="band" id="projects">
+  <h2>Projects</h2>
+
+  <article class="entry">
+    <div class="split">
+      <div class="entry__side">
+        <h3>3-DOF robotic wrist controller</h3>
+        <figure class="photo">
+          <img src="img/wrist-board-1000.webp" srcset="img/wrist-board-600.webp 600w, img/wrist-board-1000.webp 1000w" sizes="(max-width: 56rem) 90vw, 35vw" width="1000" height="1334" loading="lazy" alt="A hand holding a small purple circuit board with a black heatsink, capacitors and white connectors.">
+          <figcaption>The assembled board.</figcaption>
+        </figure>
+      </div>
+      <div class="entry__body">
+        <p>A custom KiCad PCB that controls a 3-DOF robotic wrist (pitch, yaw, roll) and its gripper. One board takes a single 24 V input and provides four DC motor channels with magnetic encoder feedback, two servo outputs, a laser diode output and an RS-485 link, all run by a plug-in STM32. I designed the board, wrote the firmware and tested it end to end.</p>
+        <figure class="diagram">
+          <img src="img/wrist-render-1099.webp" width="1099" height="679" loading="lazy" alt="3D render of the green wrist controller board, with rows of white connectors along two edges and a voltage regulator standing at the back.">
+          <figcaption>KiCad 3D render.</figcaption>
+        </figure>
+        <p><b>Motor drive.</b> Two L298N dual H-bridges give four independent DC motor channels: one for each wrist axis and one for the gripper. The L298N has no internal clamp diodes, so each driver has eight external flyback diodes to catch the inductive kick when a motor is switched off or reversed.</p>
+        <p><b>Feedback.</b> Each motor connector carries both motor leads plus encoder power and two encoder signals, so one cable per joint handles drive and feedback.</p>
+        <div class="pair">
+          <figure class="photo" style="flex: 2.61">
+            <a href="img/wrist-schematic-drive-1142.webp" target="_blank" rel="noopener"><img src="img/wrist-schematic-drive-1142.webp" width="1142" height="437" loading="lazy" alt="Schematic of two L298N H-bridge drivers with their flyback diodes and decoupling capacitors."></a>
+            <figcaption>Motor drive schematic.</figcaption>
+          </figure>
+          <figure class="photo" style="flex: 1.38">
+            <a href="img/wrist-schematic-support-1076.webp" target="_blank" rel="noopener"><img src="img/wrist-schematic-support-1076.webp" width="1076" height="782" loading="lazy" alt="Schematic of the servo and laser level shifters, the voltage regulators, the RS-485 transceiver and the microcontroller headers."></a>
+            <figcaption>Support circuitry.</figcaption>
+          </figure>
+        </div>
+        <p><b>Level shifting.</b> Servo and laser outputs use an S8050 NPN driving an S8550 PNP, so a 3.3 V MCU pin can switch a 5 V load.</p>
+        <p><b>Firmware.</b> C on the STM32 runs a PID position loop per axis, closing on real-time encoder feedback. On the assembled wrist it tracks within ±2° on all three axes.</p>
+        <p>The plot below is the same kind of loop. The target jumps at the first mark and a load lands on the arm at the second. Drag the gains to change how it recovers.</p>
+      </div>
+    </div>
+
+    <figure class="sim">
+      <div class="sim__plot">
+        <svg viewBox="0 0 6 1.8" preserveAspectRatio="none" role="img" aria-label="Position of a PID controlled motor over six seconds">
+          <path class="sim__target" d="M0,1.5H0.5V0.5H6"/>
+          <path class="sim__trace" id="loop-trace"/>
+        </svg>
+        <span class="sim__mark" style="left: calc(0.5 / 6 * 100%)">Step</span>
+        <span class="sim__mark" style="left: calc(3.5 / 6 * 100%)">Load</span>
+      </div>
+      <div class="sim__controls">
+        <label class="knob">Kp <output id="o-kp">80</output><input type="range" id="kp" min="0" max="200" step="1" value="80"></label>
+        <label class="knob">Ki <output id="o-ki">120</output><input type="range" id="ki" min="0" max="200" step="1" value="120"></label>
+        <label class="knob">Kd <output id="o-kd">12</output><input type="range" id="kd" min="0" max="30" step="0.5" value="12"></label>
+        <div class="sim__presets">
+          <button type="button" data-preset="80,120,12">Tuned</button>
+          <button type="button" data-preset="180,0,0.5">Ringing</button>
+          <button type="button" data-preset="8,0,6">Sluggish</button>
+        </div>
+      </div>
+      <figcaption id="loop-read" role="status"></figcaption>
+    </figure>
+  </article>
+
+  <article class="entry">
+    <div class="split">
+      <div class="entry__side">
+        <h3>Membrane tube extrusion control</h3>
+        <figure class="photo">
+          <img src="img/daq-enclosure-1000.webp" srcset="img/daq-enclosure-600.webp 600w, img/daq-enclosure-1000.webp 1000w" sizes="(max-width: 56rem) 90vw, 35vw" width="1000" height="1334" loading="lazy" alt="An open grey enclosure packed with two Arduino Mega boards on terminal breakouts, thermocouple amplifier boards, DIN-rail breakers and a power supply, with wiring run through slotted ducts.">
+          <figcaption>The data acquisition enclosure.</figcaption>
+        </figure>
+      </div>
+      <div class="entry__body">
+        <p>At Alchemity, membrane tubes are extruded and dried in multi-hour runs. I built the closed-loop stepper controller that holds extrusion speed within 1% of target RPM for the whole run, so each tube keeps a uniform wall thickness, and the data acquisition system that records what the temperatures and motors did.</p>
+        <figure class="diagram diagram--small">
+          <img src="img/daq-diagram.svg" width="306" height="182" loading="lazy" alt="Block diagram. Thermocouples feed quad amplifier boards, which report over I2C to an Arduino Mega on a DIN breakout. Motor telemetry joins there. Data goes over USB serial to a Python logger, then timestamped logs and an auto-generated test report. Mains comes in through DIN breakers to a 5 volt DIN-rail supply.">
+          <figcaption>Data acquisition block diagram.</figcaption>
+        </figure>
+        <p><b>Sensing.</b> Thermocouples land on quad amplifier boards that do cold-junction compensation and report temperature over I²C, so the microcontroller never handles microvolt signals directly.</p>
+        <p><b>Pipeline.</b> A Python logger timestamps every sample, saves the run and generates the test report, which let us tune the extrusion parameters from data instead of by feel.</p>
+        <p>Below is a toy version of why the loop matters. Over a four-hour run the paste stiffens and the load on the motor creeps up. Switch the loop off and watch the speed, and the tube wall, drift.</p>
+      </div>
+    </div>
+
+    <figure class="sim">
+      <div>
+        <div class="sim__plot sim__plot--run">
+          <svg viewBox="0 0 240 100" preserveAspectRatio="none" role="img" aria-label="Extrusion speed over a four-hour run, against a band of plus or minus one percent">
+            <rect class="sim__band" y="18.75" width="240" height="12.5"/>
+            <path class="sim__target" d="M0,25H240"/>
+            <path class="sim__trace" id="run-trace"/>
+          </svg>
+          <span class="sim__mark" style="left: 0">Start</span>
+          <span class="sim__mark" style="left: 25%">1 h</span>
+          <span class="sim__mark" style="left: 50%">2 h</span>
+          <span class="sim__mark" style="left: 75%">3 h</span>
+          <span class="sim__mark" style="left: 100%">4 h</span>
+        </div>
+        <svg class="tube" viewBox="0 0 240 40" preserveAspectRatio="none" role="img" aria-label="Section along the extruded tube, showing its wall thickness">
+          <path id="run-wall-top"/><path id="run-wall-bottom"/>
+        </svg>
+      </div>
+      <div class="sim__controls">
+        <div class="sim__presets">
+          <button type="button" data-run="closed">Closed loop</button>
+          <button type="button" data-run="open">Open loop</button>
+        </div>
+        <p class="sim__note">The shaded band is ±1% of target speed. Under it is a section along the tube from that run, with wall changes drawn five times larger so they show.</p>
+      </div>
+      <figcaption id="run-read" role="status"></figcaption>
+    </figure>
+  </article>
+
+  <article class="split entry">
+    <div class="entry__side">
+      <h3>Ball mill relay controller</h3>
+      <figure class="photo">
+        <img src="img/relay-enclosure-1000.webp" srcset="img/relay-enclosure-600.webp 600w, img/relay-enclosure-1000.webp 1000w" sizes="(max-width: 56rem) 90vw, 35vw" width="1000" height="1334" loading="lazy" alt="Inside a relay enclosure: four solid-state relays on heatsinks beside a row of DIN terminal blocks, with mains wiring entering through cable glands.">
+        <figcaption>The relay enclosure.</figcaption>
+      </figure>
+    </div>
+    <div class="entry__body">
+      <p>Ball milling a batch of powder at Alchemity takes days of unattended running. I built an ESP32-based relay controller in a custom enclosure that automates the mill, switching mains loads through solid-state relays on a schedule so nobody has to babysit it.</p>
+      <figure class="diagram diagram--small">
+        <img src="img/relay-diagram.svg" width="306" height="139" loading="lazy" alt="Block diagram. A run schedule feeds an ESP32 controller and a relay control interface, which drives solid-state relays on DIN rail. Mains enters through cable glands to DIN terminal blocks and a ground bus, then through the relays to the ball mill motor. The terminal blocks also power an enclosure fan.">
+        <figcaption>Relay controller block diagram.</figcaption>
+      </figure>
+      <p><b>Switching.</b> Solid-state relays switch the mains loads. With no contacts to wear or arc, they hold up to days of continuous cycling far better than mechanical relays.</p>
+      <p><b>A furnace that kept overshooting.</b> A furnace running under PID control kept overshooting its setpoint. I traced it with a DMM to faulty relay outputs: the controller was asking the heater to turn off, and the relay stage was not following. I redesigned the relay control scheme and reprogrammed the alarm thresholds, which eliminated the fault.</p>
+    </div>
+  </article>
+
+  <article class="entry">
+    <div class="split">
+      <div class="entry__side">
+        <h3>SOFC thickness optimization tool</h3>
+        <figure class="math math--narrow">
+          <img src="img/sofc-model.svg" width="130" height="149" loading="lazy" alt="Cell voltage equals the Nernst voltage minus activation and ohmic losses. The Nernst voltage depends on temperature and gas pressures. Activation loss is R T over F times the inverse hyperbolic sine of current over twice the exchange current. Ohmic loss is current times the sum of electrolyte thickness over its conductivity and electrode thickness over its conductivity. Power is voltage times current.">
+          <figcaption>The cell model.</figcaption>
+        </figure>
+      </div>
+      <div class="entry__body">
+        <p>A Python GUI that picks the best material orientation and optimizes layer thickness to ±10 µm. Behind it is a MATLAB/Simulink model of the fuel cell (Nernst voltage, ohmic and activation losses) that shows how electrolyte and electrode thickness trade off against power output. MATLAB scripts parse the experimental data and feed the model.</p>
+        <ol class="chain"><li>Cell measurements</li><li>MATLAB parser</li><li>Simulink model</li><li>Thickness targets</li></ol>
+        <p>Below is a toy version of that trade-off, using textbook numbers for a zirconia cell at 800 °C rather than Alchemity's data. Move the layers in 10 µm steps and watch the peak power shift.</p>
+      </div>
+    </div>
+
+    <figure class="sim">
+      <div class="sim__plot sim__plot--cell">
+        <svg viewBox="0 0 3 1.1" preserveAspectRatio="none" role="img" aria-label="Fuel cell voltage and power density against current density">
+          <path class="sim__target" id="cell-voltage"/>
+          <path class="sim__trace" id="cell-power"/>
+        </svg>
+        <span class="sim__peak" id="cell-peak"></span>
+        <span class="sim__level" style="top: calc(0.1 / 1.1 * 100%)">1.0</span>
+        <span class="sim__level" style="top: calc(0.6 / 1.1 * 100%)">0.5</span>
+        <span class="sim__mark" style="left: 0">0</span>
+        <span class="sim__mark" style="left: 33.33%">1</span>
+        <span class="sim__mark" style="left: 66.67%">2</span>
+        <span class="sim__mark" style="left: 100%">3</span>
+      </div>
+      <div class="sim__controls">
+        <label class="knob">Electrolyte <output id="o-te">150 µm</output><input type="range" id="te" min="50" max="300" step="10" value="150"></label>
+        <label class="knob">Electrode <output id="o-tc">30 µm</output><input type="range" id="tc" min="10" max="100" step="10" value="30"></label>
+        <p class="sim__note">Solid line: power density in W/cm². Dashed line: cell voltage in V. Both share the scale on the left. Along the bottom: current density in A/cm². The dot marks peak power.</p>
+      </div>
+      <figcaption id="cell-read" role="status"></figcaption>
+    </figure>
+  </article>
+</section>
+
+<section class="band" id="side-quests">
+  <h2>Side quests</h2>
+
+  <article class="split entry entry--quest">
+    <figure class="photo">
+      <img src="img/xbox-700.webp" srcset="img/xbox-700.webp 700w, img/xbox-1200.webp 1200w" sizes="(max-width: 56rem) 60vw, 19vw" width="1200" height="1497" loading="lazy" alt="An Xbox One S lying upside down on a desk with its bottom cover removed and a USB stick plugged in. The monitor behind it shows the Xbox sign-in screen asking who's playing today.">
+    </figure>
+    <div class="entry__body">
+      <h3>Reviving an Xbox One S</h3>
+      <p>The hard drive in my old Xbox One S got corrupted, so this summer I opened the console up, replaced the drive with an SSD and repartitioned it myself. This is it running again, bottom cover still off.</p>
+    </div>
+  </article>
+
+  <article class="split entry entry--quest">
+    <figure class="photo">
+      <img src="img/puzzle-600.webp" srcset="img/puzzle-600.webp 600w, img/puzzle-1000.webp 1000w" sizes="(max-width: 56rem) 60vw, 19vw" width="1000" height="1000" loading="lazy" alt="A wooden model of a vintage Grand Prix race car, built from laser-cut plywood, with spoked wheels and an exposed engine.">
+      <figcaption>Photo: ROKR.</figcaption>
+    </figure>
+    <div class="entry__body">
+      <h3>Wooden puzzles</h3>
+      <p>I like puzzles, especially the kind you build. This one is ROKR's Grand Prix Car: 220 laser-cut wooden pieces that lock together without glue. It's my favorite one to build so far.</p>
+    </div>
+  </article>
+</section>
+
+<section class="band band--close" id="contact">
+  <h2 class="statement lead">Want to reach out?</h2>
+  <p class="reach lead">
+    <a href="mailto:neilchibberr@gmail.com">neilchibberr@gmail.com</a>
+    <a href="https://www.linkedin.com/in/nchibber" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="Neil_Chibber_Resume.pdf">CV</a>
+  </p>
+</section>
+
+</main>
+
+<footer class="end">
+  <p>© 2026 Neil Chibber</p>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
